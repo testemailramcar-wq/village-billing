@@ -1,17 +1,31 @@
-import './globals.css'
-import { Inter } from 'next/font/google'
+import "./globals.css";
+import { DM_Sans, DM_Serif_Display } from "next/font/google";
 
-const inter = Inter({ subsets: ['latin'] })
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dm-sans",
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-dm-serif",
+});
 
 export const metadata = {
-  title: 'Village Billing System',
-  description: 'Manage and pay your dues easily',
-}
+  title: "Pagsibol Village Billing Portal",
+  description: "Manage and pay your community dues easily",
+};
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${dmSans.variable} ${dmSerif.variable}`}>
+      <body style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+        {children}
+      </body>
     </html>
-  )
+  );
 }
