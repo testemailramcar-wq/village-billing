@@ -2,7 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
 body {
   background-color: #f8fafc;
   color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* DM Serif Display for serif elements */
+.font-serif {
+  font-family: var(--font-dm-serif), 'DM Serif Display', Georgia, serif;
 }
