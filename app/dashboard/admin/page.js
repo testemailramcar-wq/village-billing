@@ -1,9 +1,11 @@
-.page {
-  min-height: 100vh;
-  background: #f8fafc;
-  font-family: 'DM Sans', sans-serif;
-  display: flex;
-  flex-direction: column;
+import styles from './page.module.css'
+
+export default function AdminPage() {
+  return (
+    <div className={styles.page}>
+      <h1>Admin Dashboard</h1>
+    </div>
+  )
 }
 
 /* ── TOPBAR ── */
