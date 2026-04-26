@@ -1,0 +1,255 @@
+.page {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── LEFT ── */
+.left {
+  width: 42%;
+  background: #0f2744;
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.left::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  right: -80px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(55, 138, 221, 0.12);
+  pointer-events: none;
+}
+
+.brand {}
+
+.tag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  color: #378ADD;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 36px;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+
+.title em {
+  font-style: italic;
+  color: #85B7EB;
+}
+
+.desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+.stats {
+  display: flex;
+  gap: 28px;
+  padding-top: 32px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statNum {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  color: #fff;
+  font-weight: 400;
+}
+
+.statLbl {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── RIGHT ── */
+.right {
+  flex: 1;
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #fff;
+}
+
+.formTitle {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  color: #111;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.formSub {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 32px;
+}
+
+/* Role Tabs */
+.roleTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.roleTab {
+  flex: 1;
+  padding: 11px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 400;
+}
+
+.roleTabActive {
+  background: #0f2744;
+  color: #fff;
+  border-color: #0f2744;
+  font-weight: 500;
+}
+
+.roleTab:hover:not(.roleTabActive) {
+  background: #f3f4f6;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.fieldGroup {
+  margin-bottom: 18px;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 7px;
+  letter-spacing: 0.4px;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus {
+  border-color: #378ADD;
+  box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.1);
+  background: #fff;
+}
+
+.error {
+  font-size: 13px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 13px;
+  background: #0f2744;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.2px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #185FA5;
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #f3f4f6;
+  line-height: 1.8;
+}
+
+.hint strong {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .left {
+    width: 100%;
+    padding: 36px 28px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .right {
+    padding: 36px 28px;
+  }
+}
