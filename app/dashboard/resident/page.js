@@ -1,155 +1,60 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import styles from "./login.module.css";
+import { redirect } from "next/navigation";
+import { getUser } from "@/lib/auth";
+import { calculateMonthlyDue } from "@/lib/billing";
+import LogoutButton from "@/components/LogoutButton";
+import styles from "./resident.module.css";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [role, setRole] = useState("resident");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+export default async function ResidentDashboard() {
+  const user = await getUser();
+  if (!user) redirect("/login");
+  if (user.role !== "resident") redirect("/dashboard/admin");
 
-  async function handleLogin(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const billing = calculateMonthlyDue();
 
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, role }),
-      });
+  const history = [
+    { month: "March 2026", amount: 360, status: "paid" },
+    { month: "February 2026", amount: 330, status: "paid" },
+    { month: "January 2026", amount: 360, status: "paid" },
+    { month: "December 2025", amount: 400, status: "late" },
+  ];
 
-      const data = await res.json();
+  const notices = [
+    { title: "Water schedule", detail: "Mon, Wed, Fri · 5am–8am" },
+    { title: "HOA meeting", detail: "May 3 · 6pm · Covered court" },
+    { title: "Garbage collection", detail: "Tues & Sat · 6am" },
+    { title: "Visitor curfew", detail: "No entry after 10pm" },
+  ];
 
-      if (!res.ok) {
-        setError(data.error || "Invalid credentials. Please try again.");
-        setLoading(false);
-        return;
-      }
+  const statusClass = {
+    paid: styles.statusPaid,
+    late: styles.statusLate,
+    unpaid: styles.statusUnpaid,
+  };
 
-      if (data.role === "admin") {
-        router.push("/dashboard/admin");
-      } else {
-        router.push("/dashboard/resident");
-      }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-      setLoading(false);
-    }
-  }
-
-  function switchRole(r) {
-    setRole(r);
-    setUsername("");
-    setPassword("");
-    setError("");
-  }
+  const initials = user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
 
   return (
     <div className={styles.page}>
-      {/* Left Panel */}
-      <div className={styles.left}>
-        <div className={styles.brand}>
-          <div className={styles.tag}>Pagsibol Village · Phase 1</div>
-          <h1 className={styles.title}>
-            Your community,<br />
-            <em>organized.</em>
-          </h1>
-          <p className={styles.desc}>
-            Manage your dues, view announcements, and stay connected
-            with your community — all in one place.
-          </p>
+      <header className={styles.topbar}>
+        <div className={styles.topLeft}>
+          <span className={styles.logo}>Pagsibol</span>
+          <span className={`${styles.badge} ${styles.badgeResident}`}>RESIDENT PORTAL</span>
+        </div>
+        <div className={styles.topRight}>
+          <div className={styles.userChip}>
+            <div className={`${styles.avatar} ${styles.avatarResident}`}>{initials}</div>
+            <span className={styles.userName}>{user.unit || user.name}</span>
+          </div>
+          <LogoutButton />
+        </div>
+      </header>
+
+      <main className={styles.body}>
+        <div className={styles.welcomeRow}>
+          <h1 className={styles.welcomeTitle}>Good day, {user.name}</h1>
+          <p className={styles.welcomeSub}>{billing.month} {billing.year} — {billing.tier} billing period active</p>
         </div>
 
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>142</span>
-            <span className={styles.statLbl}>Households</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>₱330</span>
-            <span className={styles.statLbl}>Lowest tier</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>Phase 1</span>
-            <span className={styles.statLbl}>Active area</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Panel */}
-      <div className={styles.right}>
-        <h2 className={styles.formTitle}>Welcome back</h2>
-        <p className={styles.formSub}>Sign in to access your portal</p>
-
-        {/* Role Tabs */}
-        <div className={styles.roleTabs}>
-          <button
-            className={`${styles.roleTab} ${role === "resident" ? styles.roleTabActive : ""}`}
-            onClick={() => switchRole("resident")}
-            type="button"
-          >
-            Resident
-          </button>
-          <button
-            className={`${styles.roleTab} ${role === "admin" ? styles.roleTabActive : ""}`}
-            onClick={() => switchRole("admin")}
-            type="button"
-          >
-            Admin
-          </button>
-        </div>
-
-        <form onSubmit={handleLogin} className={styles.form}>
-          <div className={styles.fieldGroup}>
-            <label className={styles.label}>
-              {role === "admin" ? "Username" : "Unit / Block"}
-            </label>
-            <input
-              className={styles.input}
-              type="text"
-              placeholder={role === "admin" ? "admin" : "e.g. Block 3 Lot 12"}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              autoComplete="username"
-            />
-          </div>
-
-          <div className={styles.fieldGroup}>
-            <label className={styles.label}>Password</label>
-            <input
-              className={styles.input}
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
-          </div>
-
-          {error && <div className={styles.error}>{error}</div>}
-
-          <button
-            className={styles.submitBtn}
-            type="submit"
-            disabled={loading}
-          >
-            {loading ? "Signing in…" : "Sign in"}
-          </button>
-        </form>
-
-        <div className={styles.hint}>
-          <strong>Demo credentials</strong><br />
-          Resident: <strong>resident</strong> / <strong>1234</strong><br />
-          Admin: <strong>admin</strong> / <strong>admin</strong>
-        </div>
-      </div>
-    </div>
-  );
-}
+        <div className={styles.billCard}>
+          <div className={styles.billLabel}>Current balance due</div>
+          <div className={styles.billAmount}>₱{billing.t
