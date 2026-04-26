@@ -1,0 +1,187 @@
+.page {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: #fff;
+  border-bottom: 1px solid #f1f5f9;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topLeft { display: flex; align-items: center; gap: 12px; }
+
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  color: #0f2744;
+  font-weight: 400;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.badgeResident { background: #E1F5EE; color: #085041; }
+.badgeAdmin { background: #E6F1FB; color: #0C447C; }
+
+.topRight { display: flex; align-items: center; gap: 12px; }
+
+.userChip { display: flex; align-items: center; gap: 8px; }
+
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  flex-shrink: 0;
+}
+
+.avatarResident { background: #E1F5EE; color: #085041; }
+.avatarAdmin { background: #E6F1FB; color: #0C447C; }
+
+.userName {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ── BODY ── */
+.body { flex: 1; padding: 28px; max-width: 900px; margin: 0 auto; width: 100%; }
+
+.welcomeRow { margin-bottom: 24px; }
+
+.welcomeTitle {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  color: #111;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.welcomeSub { font-size: 14px; color: #9ca3af; }
+
+/* ── BILL CARD ── */
+.billCard {
+  background: #0f2744;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.billCard::after {
+  content: '';
+  position: absolute;
+  right: -40px; top: -40px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(55, 138, 221, 0.13);
+  pointer-events: none;
+}
+
+.billLabel {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.billAmount {
+  font-family: 'DM Serif Display', serif;
+  font-size: 44px;
+  color: #fff;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.billPeriod { font-size: 13px; color: rgba(255,255,255,0.45); }
+
+.billTier {
+  display: inline-block;
+  margin-top: 14px;
+  background: rgba(55, 138, 221, 0.2);
+  color: #85B7EB;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* ── TWO COL ── */
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .twoCol { grid-template-columns: 1fr; }
+}
+
+/* ── PANEL ── */
+.panel {
+  background: #fff;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.panelTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* History */
+.historyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 13px;
+  gap: 8px;
+}
+.historyRow:last-child { border-bottom: none; }
+
+.historyMonth { color: #6b7280; flex: 1; }
+.historyAmount { font-weight: 500; color: #111; }
+
+.statusBadge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+.statusPaid { background: #E1F5EE; color: #0F6E56; }
+.statusUnpaid { background: #FAECE7; color: #993C1D; }
+.statusLate { background: #FCEBEB; color: #A32D2D; }
+
+/* Notices */
+.noticeRow {
+  padding: 10px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+.noticeRow:last-child { border-bottom: none; }
+
+.noticeTitle { font-size: 13px; color: #111; font-weight: 400; }
+.noticeDetail { font-size: 11px; color: #9ca3af; margin-top: 3px; }
