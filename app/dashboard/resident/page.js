@@ -57,4 +57,36 @@ export default async function ResidentDashboard() {
 
         <div className={styles.billCard}>
           <div className={styles.billLabel}>Current balance due</div>
-          <div className={styles.billAmount}>₱{billing.t
+          <div className={styles.billAmount}>₱{billing.total}.00</div>
+          <div className={styles.billPeriod}>{billing.month} {billing.year} · Due end of month</div>
+          <div className={styles.billTier}>{billing.tier} applied</div>
+        </div>
+
+        <div className={styles.twoCol}>
+          <div className={styles.panel}>
+            <div className={styles.panelTitle}>Payment history</div>
+            {history.map((h) => (
+              <div key={h.month} className={styles.historyRow}>
+                <span className={styles.historyMonth}>{h.month}</span>
+                <span className={styles.historyAmount}>₱{h.amount}</span>
+                <span className={`${styles.statusBadge} ${statusClass[h.status]}`}>
+                  {h.status === "paid" ? "Paid" : h.status === "late" ? "Late" : "Unpaid"}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.panel}>
+            <div className={styles.panelTitle}>Community notices</div>
+            {notices.map((n) => (
+              <div key={n.title} className={styles.noticeRow}>
+                <div className={styles.noticeTitle}>{n.title}</div>
+                <div className={styles.noticeDetail}>{n.detail}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
