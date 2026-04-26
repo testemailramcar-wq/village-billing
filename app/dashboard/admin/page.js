@@ -1,192 +1,155 @@
-import styles from './page.module.css'
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./login.module.css";
 
-export default function AdminPage() {
+export default function LoginPage() {
+  const router = useRouter();
+  const [role, setRole] = useState("resident");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Invalid credentials. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      if (data.role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/resident");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
+  }
+
+  function switchRole(r) {
+    setRole(r);
+    setUsername("");
+    setPassword("");
+    setError("");
+  }
+
   return (
     <div className={styles.page}>
-      <h1>Admin Dashboard</h1>
+      {/* Left Panel */}
+      <div className={styles.left}>
+        <div className={styles.brand}>
+          <div className={styles.tag}>Pagsibol Village · Phase 1</div>
+          <h1 className={styles.title}>
+            Your community,<br />
+            <em>organized.</em>
+          </h1>
+          <p className={styles.desc}>
+            Manage your dues, view announcements, and stay connected
+            with your community — all in one place.
+          </p>
+        </div>
+
+        <div className={styles.stats}>
+          <div className={styles.stat}>
+            <span className={styles.statNum}>142</span>
+            <span className={styles.statLbl}>Households</span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statNum}>₱330</span>
+            <span className={styles.statLbl}>Lowest tier</span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statNum}>Phase 1</span>
+            <span className={styles.statLbl}>Active area</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel */}
+      <div className={styles.right}>
+        <h2 className={styles.formTitle}>Welcome back</h2>
+        <p className={styles.formSub}>Sign in to access your portal</p>
+
+        {/* Role Tabs */}
+        <div className={styles.roleTabs}>
+          <button
+            className={`${styles.roleTab} ${role === "resident" ? styles.roleTabActive : ""}`}
+            onClick={() => switchRole("resident")}
+            type="button"
+          >
+            Resident
+          </button>
+          <button
+            className={`${styles.roleTab} ${role === "admin" ? styles.roleTabActive : ""}`}
+            onClick={() => switchRole("admin")}
+            type="button"
+          >
+            Admin
+          </button>
+        </div>
+
+        <form onSubmit={handleLogin} className={styles.form}>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label}>
+              {role === "admin" ? "Username" : "Unit / Block"}
+            </label>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder={role === "admin" ? "admin" : "e.g. Block 3 Lot 12"}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              autoComplete="username"
+            />
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <label className={styles.label}>Password</label>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+          </div>
+
+          {error && <div className={styles.error}>{error}</div>}
+
+          <button
+            className={styles.submitBtn}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Signing in…" : "Sign in"}
+          </button>
+        </form>
+
+        <div className={styles.hint}>
+          <strong>Demo credentials</strong><br />
+          Resident: <strong>resident</strong> / <strong>1234</strong><br />
+          Admin: <strong>admin</strong> / <strong>admin</strong>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
-
-/* ── TOPBAR ── */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  background: #fff;
-  border-bottom: 1px solid #f1f5f9;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.topLeft { display: flex; align-items: center; gap: 12px; }
-
-.logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 18px;
-  color: #0f2744;
-  font-weight: 400;
-}
-
-.badge {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-
-.badgeAdmin { background: #E6F1FB; color: #0C447C; }
-
-.topRight { display: flex; align-items: center; gap: 12px; }
-.userChip { display: flex; align-items: center; gap: 8px; }
-
-.avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 600;
-}
-
-.avatarAdmin { background: #E6F1FB; color: #0C447C; }
-
-.userName { font-size: 13px; color: #6b7280; }
-
-/* ── BODY ── */
-.body { flex: 1; padding: 28px; max-width: 960px; margin: 0 auto; width: 100%; }
-
-.welcomeRow { margin-bottom: 24px; }
-
-.welcomeTitle {
-  font-family: 'DM Serif Display', serif;
-  font-size: 24px;
-  color: #111;
-  font-weight: 400;
-  margin-bottom: 4px;
-}
-
-.welcomeSub { font-size: 14px; color: #9ca3af; }
-
-/* ── METRICS ── */
-.metricsRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-@media (max-width: 640px) {
-  .metricsRow { grid-template-columns: repeat(2, 1fr); }
-}
-
-.metricCard {
-  background: #fff;
-  border: 1px solid #f1f5f9;
-  border-radius: 12px;
-  padding: 18px;
-}
-
-.metricLabel {
-  font-size: 11px;
-  color: #9ca3af;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.metricValue {
-  font-family: 'DM Serif Display', serif;
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.metricSub { font-size: 11px; color: #9ca3af; }
-
-.green { color: #0F6E56; }
-.amber { color: #854F0B; }
-.red { color: #A32D2D; }
-.blue { color: #185FA5; }
-
-/* ── TWO COL ── */
-.twoCol {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-@media (max-width: 680px) {
-  .twoCol { grid-template-columns: 1fr; }
-}
-
-/* ── PANEL ── */
-.panel {
-  background: #fff;
-  border: 1px solid #f1f5f9;
-  border-radius: 12px;
-  padding: 18px 20px;
-}
-
-.panelTitle {
-  font-size: 13px;
-  font-weight: 500;
-  color: #111;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-/* Payment rows */
-.payRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px solid #f8fafc;
-  font-size: 13px;
-}
-.payRow:last-child { border-bottom: none; }
-
-.payInfo { flex: 1; display: flex; flex-direction: column; gap: 1px; }
-.payUnit { font-size: 13px; color: #111; }
-.payName { font-size: 11px; color: #9ca3af; }
-.payAmount { font-weight: 500; color: #111; white-space: nowrap; }
-
-/* Resident rows */
-.resRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px solid #f8fafc;
-}
-.resRow:last-child { border-bottom: none; }
-
-.resAvatar {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: #E6F1FB;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 600;
-  color: #0C447C;
-  flex-shrink: 0;
-}
-
-.resInfo { flex: 1; display: flex; flex-direction: column; gap: 1px; }
-.resName { font-size: 13px; color: #111; }
-.resUnit { font-size: 11px; color: #9ca3af; }
-
-/* Status badges */
-.statusBadge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 20px;
-  white-space: nowrap;
-  letter-spacing: 0.2px;
-}
-.statusPaid { background: #E1F5EE; color: #0F6E56; }
-.statusUnpaid { background: #FAECE7; color: #993C1D; }
-.statusOverdue { background: #FCEBEB; color: #A32D2D; }
