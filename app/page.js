@@ -1,67 +1,154 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { calculateMonthlyDue } from '@/lib/billing';
-import { CreditCard, CheckCircle, Clock, Info } from 'lucide-react';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./login.module.css";
 
-export default function Home() {
-  const [billing, setBilling] = useState(null);
-  const [isPaid, setIsPaid] = useState(false);
+export default function LoginPage() {
+  const router = useRouter();
+  const [role, setRole] = useState("resident");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setBilling(calculateMonthlyDue());
-  }, []);
+  async function handleLogin(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-  if (!billing) return <div className="p-10 text-center">Loading Dashboard...</div>;
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Invalid credentials. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      if (data.role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/resident");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
+  }
+
+  function switchRole(r) {
+    setRole(r);
+    setUsername("");
+    setPassword("");
+    setError("");
+  }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen p-4 pb-10">
-      <header className="py-6">
-        <h1 className="text-2xl font-black text-blue-600 tracking-tight italic">HOA_PORTAL</h1>
-      </header>
-
-      {/* Balance Card */}
-      <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-blue-100 overflow-hidden border border-gray-50">
-        <div className={`p-10 text-center ${isPaid ? 'bg-green-500' : 'bg-blue-600'} text-white transition-all`}>
-          <p className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">Current Balance Due</p>
-          <h2 className="text-6xl font-black italic">₱{isPaid ? "0.00" : billing.total}</h2>
-          <div className="mt-4 inline-flex items-center gap-2 bg-black/10 px-4 py-1 rounded-full text-xs font-bold uppercase">
-            {isPaid ? <CheckCircle size={14}/> : <Clock size={14}/>}
-            {isPaid ? "Verified" : "Unpaid"}
-          </div>
+    <div className={styles.page}>
+      {/* Left Panel */}
+      <div className={styles.left}>
+        <div className={styles.brand}>
+          <div className={styles.tag}>Pagsibol Village · Phase 1</div>
+          <h1 className={styles.title}>
+            Your community,<br />
+            <em>organized.</em>
+          </h1>
+          <p className={styles.desc}>
+            Manage your dues, view announcements, and stay connected
+            with your community — all in one place.
+          </p>
         </div>
 
-        <div className="p-8">
-          <div className="space-y-4 mb-8">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400 font-medium">Billing Period</span>
-              <span className="font-bold">{billing.month} {billing.year}</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400 font-medium">Tier Applied</span>
-              <span className="font-bold text-blue-600">{billing.tier}</span>
-            </div>
+        <div className={styles.stats}>
+          <div className={styles.stat}>
+            <span className={styles.statNum}>142</span>
+            <span className={styles.statLbl}>Households</span>
           </div>
-
-          <button 
-            onClick={() => setIsPaid(true)}
-            disabled={isPaid}
-            className={`w-full py-5 rounded-2xl font-black text-lg transition-all ${
-              isPaid ? 'bg-gray-100 text-gray-400' : 'bg-blue-600 text-white shadow-lg shadow-blue-200 active:scale-95'
-            }`}
-          >
-            {isPaid ? "ALREADY SETTLED" : "PAY NOW"}
-          </button>
+          <div className={styles.stat}>
+            <span className={styles.statNum}>₱330</span>
+            <span className={styles.statLbl}>Lowest tier</span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statNum}>Phase 1</span>
+            <span className={styles.statLbl}>Active area</span>
+          </div>
         </div>
       </div>
 
-      {/* Info Section */}
-      <div className="mt-6 bg-blue-50 p-6 rounded-3xl border border-blue-100">
-        <h3 className="text-blue-800 font-bold flex items-center gap-2 mb-2 text-sm">
-          <Info size={16}/> Tiered Pricing Info
-        </h3>
-        <p className="text-xs text-blue-600 leading-relaxed font-medium">
-          Dues are calculated based on your payment date. Pay before the 7th to avail the lowest rate of ₱360.
-        </p>
+      {/* Right Panel */}
+      <div className={styles.right}>
+        <h2 className={styles.formTitle}>Welcome back</h2>
+        <p className={styles.formSub}>Sign in to access your portal</p>
+
+        {/* Role Tabs */}
+        <div className={styles.roleTabs}>
+          <button
+            className={`${styles.roleTab} ${role === "resident" ? styles.roleTabActive : ""}`}
+            onClick={() => switchRole("resident")}
+            type="button"
+          >
+            Resident
+          </button>
+          <button
+            className={`${styles.roleTab} ${role === "admin" ? styles.roleTabActive : ""}`}
+            onClick={() => switchRole("admin")}
+            type="button"
+          >
+            Admin
+          </button>
+        </div>
+
+        <form onSubmit={handleLogin} className={styles.form}>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label}>
+              {role === "admin" ? "Username" : "Unit / Block"}
+            </label>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder={role === "admin" ? "admin" : "e.g. Block 3 Lot 12"}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              autoComplete="username"
+            />
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <label className={styles.label}>Password</label>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+          </div>
+
+          {error && <div className={styles.error}>{error}</div>}
+
+          <button
+            className={styles.submitBtn}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Signing in…" : "Sign in"}
+          </button>
+        </form>
+
+        <div className={styles.hint}>
+          <strong>Demo credentials</strong><br />
+          Resident: <strong>resident</strong> / <strong>1234</strong><br />
+          Admin: <strong>admin</strong> / <strong>admin</strong>
+        </div>
       </div>
     </div>
   );
