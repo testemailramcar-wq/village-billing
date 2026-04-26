@@ -61,3 +61,49 @@ export default async function AdminDashboard() {
           <h1 className={styles.welcomeTitle}>Admin overview</h1>
           <p className={styles.welcomeSub}>April 2026 — billing cycle in progress</p>
         </div>
+
+        <div className={styles.metricsRow}>
+          <div className={styles.metricCard}>
+            <div className={styles.metricLabel}>Collected</div>
+            <div className={`${styles.metricValue} ${styles.green}`}>{metrics.collected}</div>
+            <div className={styles.metricSub}>{metrics.collectedCount} households</div>
+          </div>
+          <div className={styles.metricCard}>
+            <div className={styles.metricLabel}>Pending</div>
+            <div className={`${styles.metricValue} ${styles.amber}`}>{metrics.pending}</div>
+            <div className={styles.metricSub}>{metrics.pendingCount} unpaid</div>
+          </div>
+          <div className={styles.metricCard}>
+            <div className={styles.metricLabel}>Overdue</div>
+            <div className={`${styles.metricValue} ${styles.red}`}>{metrics.overdue}</div>
+            <div className={styles.metricSub}>households</div>
+          </div>
+          <div className={styles.metricCard}>
+            <div className={styles.metricLabel}>Total units</div>
+            <div className={`${styles.metricValue} ${styles.blue}`}>{metrics.totalUnits}</div>
+            <div className={styles.metricSub}>Phase 1</div>
+          </div>
+        </div>
+
+        <div className={styles.twoCol}>
+          <div className={styles.panel}>
+            <div className={styles.panelTitle}>Recent payments</div>
+            {recentPayments.map((p) => (
+              <div key={p.unit} className={styles.payRow}>
+                <div className={styles.payInfo}>
+                  <span className={styles.payUnit}>{p.unit}</span>
+                  <span className={styles.payName}>{p.name}</span>
+                </div>
+                <span className={styles.payAmount}>₱{p.amount}</span>
+                <span className={`${styles.statusBadge} ${statusClass[p.status]}`}>
+                  {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.panel}>
+            <div className={styles.panelTitle}>Residents</div>
+            {residents.map((r) => (
+              <div key={r.unit} className={styles.resRow}>
+                <div className={styles.resA
