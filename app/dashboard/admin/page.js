@@ -106,4 +106,19 @@ export default async function AdminDashboard() {
             <div className={styles.panelTitle}>Residents</div>
             {residents.map((r) => (
               <div key={r.unit} className={styles.resRow}>
-                <div className={styles.resA
+                <div className={styles.resAvatar}>{initials(r.name)}</div>
+                <div className={styles.resInfo}>
+                  <span className={styles.resName}>{r.name}</span>
+                  <span className={styles.resUnit}>{r.unit}</span>
+                </div>
+                <span className={`${styles.statusBadge} ${statusClass[r.status]}`}>
+                  {r.status.charAt(0).toUpperCase() + r.status.slice(1)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
