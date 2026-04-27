@@ -1,18 +1,9 @@
 "use client";
 
 export default function LogoutButton() {
-  async function handleLogout() {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch (e) {
-      // ignore fetch errors, still redirect
-    }
-    window.location.href = "/login";
-  }
-
   return (
-    <button
-      onClick={handleLogout}
+    <a
+      href="/api/auth/logout"
       style={{
         fontSize: "12px",
         color: "#6b7280",
@@ -23,6 +14,8 @@ export default function LogoutButton() {
         cursor: "pointer",
         fontFamily: "inherit",
         lineHeight: 1,
+        textDecoration: "none",
+        display: "inline-block",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.background = "#fef2f2";
@@ -36,6 +29,6 @@ export default function LogoutButton() {
       }}
     >
       Sign out
-    </button>
+    </a>
   );
 }
