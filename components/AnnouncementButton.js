@@ -10,21 +10,20 @@ export default function AnnouncementButton() {
   const [sent, setSent] = useState(false);
 
   function openModal() {
-    setOpen(true);
-    setSent(false);
     setTitle("");
     setBody("");
+    setSent(false);
+    setOpen(true);
   }
 
   function closeModal() {
-    if (loading) return;
-    setOpen(false);
+    if (!loading) setOpen(false);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    // TODO: replace with real API call to your MongoDB route:
+    // Connect to your API:
     // await fetch("/api/announcements", {
     //   method: "POST",
     //   headers: { "Content-Type": "application/json" },
@@ -33,16 +32,12 @@ export default function AnnouncementButton() {
     await new Promise((r) => setTimeout(r, 900));
     setLoading(false);
     setSent(true);
-    setTimeout(() => {
-      setOpen(false);
-    }, 2000);
+    setTimeout(() => setOpen(false), 2000);
   }
 
   return (
     <>
-      {/* Trigger button */}
       <button
-        type="button"
         onClick={openModal}
         style={{
           background: "#378ADD",
@@ -59,90 +54,40 @@ export default function AnnouncementButton() {
         Create announcement →
       </button>
 
-      {/* Modal overlay */}
       {open && (
         <div
+          onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
           style={{
-            position: "fixed",
-            inset: 0,
+            position: "fixed", inset: 0,
             background: "rgba(0,0,0,0.45)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            backdropFilter: "blur(3px)",
-          }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeModal();
+            display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 9999, backdropFilter: "blur(3px)",
           }}
         >
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: "16px",
-              padding: "28px",
-              width: "100%",
-              maxWidth: "480px",
-              margin: "16px",
-              boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
-            }}
-          >
+          <div style={{
+            background: "#fff", borderRadius: "16px", padding: "28px",
+            width: "100%", maxWidth: "460px", margin: "16px",
+            boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
+          }}>
             {sent ? (
-              /* Success state */
               <div style={{ textAlign: "center", padding: "24px 0" }}>
-                <div style={{ fontSize: "48px", marginBottom: "14px" }}>✅</div>
-                <div style={{ fontSize: "17px", fontWeight: 600, color: "#111" }}>
-                  Announcement posted!
-                </div>
-                <div style={{ fontSize: "13px", color: "#9CA3AF", marginTop: "6px" }}>
-                  All residents have been notified.
-                </div>
+                <div style={{ fontSize: "48px", marginBottom: "12px" }}>✅</div>
+                <div style={{ fontSize: "17px", fontWeight: 600, color: "#111" }}>Announcement posted!</div>
+                <div style={{ fontSize: "13px", color: "#9CA3AF", marginTop: "6px" }}>All residents have been notified.</div>
               </div>
             ) : (
-              /* Form state */
               <>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "22px",
-                  }}
-                >
-                  <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#111", margin: 0 }}>
-                    📢 New Announcement
-                  </h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#111", margin: 0 }}>📢 New Announcement</h3>
                   <button
-                    type="button"
                     onClick={closeModal}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      fontSize: "22px",
-                      cursor: "pointer",
-                      color: "#9CA3AF",
-                      lineHeight: 1,
-                      padding: "0 4px",
-                    }}
-                  >
-                    ×
-                  </button>
+                    style={{ background: "none", border: "none", fontSize: "22px", cursor: "pointer", color: "#9CA3AF", lineHeight: 1, padding: "0 4px" }}
+                  >×</button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                   <div style={{ marginBottom: "16px" }}>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: "12px",
-                        fontWeight: 500,
-                        color: "#6b7280",
-                        marginBottom: "6px",
-                        letterSpacing: "0.3px",
-                      }}
-                    >
-                      Title
-                    </label>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: 500, color: "#6b7280", marginBottom: "6px" }}>Title</label>
                     <input
                       type="text"
                       value={title}
@@ -150,32 +95,14 @@ export default function AnnouncementButton() {
                       required
                       placeholder="e.g. Water interruption notice"
                       style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        borderRadius: "8px",
-                        border: "1px solid #e5e7eb",
-                        fontSize: "14px",
-                        fontFamily: "inherit",
-                        outline: "none",
-                        boxSizing: "border-box",
-                        color: "#111",
+                        width: "100%", padding: "10px 14px", borderRadius: "8px",
+                        border: "1px solid #e5e7eb", fontSize: "14px",
+                        fontFamily: "inherit", outline: "none", boxSizing: "border-box",
                       }}
                     />
                   </div>
-
-                  <div style={{ marginBottom: "22px" }}>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: "12px",
-                        fontWeight: 500,
-                        color: "#6b7280",
-                        marginBottom: "6px",
-                        letterSpacing: "0.3px",
-                      }}
-                    >
-                      Message
-                    </label>
+                  <div style={{ marginBottom: "20px" }}>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: 500, color: "#6b7280", marginBottom: "6px" }}>Message</label>
                     <textarea
                       value={body}
                       onChange={(e) => setBody(e.target.value)}
@@ -183,58 +110,24 @@ export default function AnnouncementButton() {
                       rows={4}
                       placeholder="Write your message to residents here..."
                       style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        borderRadius: "8px",
-                        border: "1px solid #e5e7eb",
-                        fontSize: "14px",
-                        fontFamily: "inherit",
-                        outline: "none",
-                        resize: "vertical",
-                        boxSizing: "border-box",
-                        color: "#111",
+                        width: "100%", padding: "10px 14px", borderRadius: "8px",
+                        border: "1px solid #e5e7eb", fontSize: "14px",
+                        fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box",
                       }}
                     />
                   </div>
-
                   <div style={{ display: "flex", gap: "10px" }}>
                     <button
                       type="button"
                       onClick={closeModal}
                       disabled={loading}
-                      style={{
-                        flex: 1,
-                        padding: "11px",
-                        borderRadius: "8px",
-                        border: "1px solid #e5e7eb",
-                        background: "#f9fafb",
-                        fontSize: "14px",
-                        cursor: "pointer",
-                        fontFamily: "inherit",
-                        color: "#6b7280",
-                      }}
-                    >
-                      Cancel
-                    </button>
+                      style={{ flex: 1, padding: "11px", borderRadius: "8px", border: "1px solid #e5e7eb", background: "#f9fafb", fontSize: "14px", cursor: "pointer", fontFamily: "inherit", color: "#6b7280" }}
+                    >Cancel</button>
                     <button
                       type="submit"
                       disabled={loading}
-                      style={{
-                        flex: 2,
-                        padding: "11px",
-                        borderRadius: "8px",
-                        border: "none",
-                        background: loading ? "#6b7280" : "#0f2744",
-                        fontSize: "14px",
-                        fontWeight: 500,
-                        cursor: loading ? "not-allowed" : "pointer",
-                        fontFamily: "inherit",
-                        color: "#fff",
-                        transition: "background 0.15s",
-                      }}
-                    >
-                      {loading ? "Posting..." : "Post to all residents"}
-                    </button>
+                      style={{ flex: 2, padding: "11px", borderRadius: "8px", border: "none", background: loading ? "#9CA3AF" : "#0f2744", fontSize: "14px", fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit", color: "#fff" }}
+                    >{loading ? "Posting..." : "Post to all residents"}</button>
                   </div>
                 </form>
               </>
