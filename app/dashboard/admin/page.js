@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
-import LogoutButton from "@/components/LogoutButton";
 import AnnouncementButton from "@/components/AnnouncementButton";
 
 export default async function AdminDashboard() {
@@ -40,10 +39,22 @@ export default async function AdminDashboard() {
     return name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
   }
 
+  const signOutStyle = {
+    fontSize: "12px",
+    color: "#6b7280",
+    border: "1px solid #e5e7eb",
+    borderRadius: "8px",
+    padding: "7px 16px",
+    textDecoration: "none",
+    display: "inline-block",
+    fontFamily: "inherit",
+    lineHeight: 1,
+  };
+
   return (
     <div style={{ minHeight: "100vh", background: "#F8FAFC", fontFamily: "system-ui,sans-serif" }}>
 
-      {/* ── TOPBAR ── */}
+      {/* TOPBAR */}
       <header style={{ background: "#fff", borderBottom: "1px solid #F1F5F9", padding: "0 32px", height: "60px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -60,7 +71,7 @@ export default async function AdminDashboard() {
             <div style={{ fontSize: "11px", color: "#9CA3AF" }}>Full access</div>
           </div>
           <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 600, color: "#1D4ED8" }}>AD</div>
-          <LogoutButton />
+          <a href="/api/auth/logout" style={signOutStyle}>Sign out</a>
         </div>
       </header>
 
@@ -182,7 +193,7 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        {/* ANNOUNCEMENT CTA — uses AnnouncementButton (client component) */}
+        {/* ANNOUNCEMENT CTA */}
         <div style={{ background: "#0f2744", borderRadius: "12px", padding: "20px 24px", marginTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <div style={{ fontSize: "14px", fontWeight: 600, color: "#fff", marginBottom: "4px" }}>📢 Post an announcement</div>
